@@ -1,6 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { mergeConfig, optimizeDeps } from "vite";
+import { mergeConfig } from "vite";
 import type { StorybookConfig } from "@storybook/react-vite";
 
 const fileName = fileURLToPath(import.meta.url);
@@ -11,16 +11,16 @@ const config: StorybookConfig = {
   addons: ["@storybook/addon-docs", "@storybook/addon-themes"],
   staticDirs: ["../public"],
   core: {},
-  async viteFinal(config, options) {
-    return mergeConfig(config, {
+  async viteFinal(viteConfig) {
+    return mergeConfig(viteConfig, {
       resolve: {
         alias: {
           "@storybook/addon-actions": path.resolve(
             dirName,
             "./stubs/addon-actions.ts",
           ),
-          "msw/browser": path.resolve(__dirname, "./stubs/msw-browser.ts"),
-          "msw/core/http": path.resolve(__dirname, "./stubs/msw-http.ts"),
+          "msw/browser": path.resolve(dirName, "./stubs/msw-browser.ts"),
+          "msw/core/http": path.resolve(dirName, "./stubs/msw-http.ts"),
         },
       },
       optimizeDeps: {

@@ -1,7 +1,27 @@
 {
   "name": "saas-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
   "dependencies": {
-    "intl": "^1.2.5"
+    "intl": "^1.2.5",
+    "ramda": "^0.32.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-hook-form": "^7.84.0",
+    "react-intl": "^10.1.18",
+    "react-loading-skeleton": "^3.5.0",
+    "react-markdown": "^10.1.0",
+    "react-router": "^8.3.0",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
@@ -10,10 +30,14 @@
     "@storybook/react": "^10.5.5",
     "@storybook/react-vite": "^10.5.5",
     "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-legacy": "^8.2.2",
     "@vitejs/plugin-react": "^6.0.5",
     "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.25",
     "storybook": "^10.5.5",
-    "tailwindcss": "3.4.19"
+    "tailwindcss": "3.4.19",
+    "vite": "^8.2.0"
   }
 }

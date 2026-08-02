@@ -33,9 +33,11 @@ async function createUser({ email, password }: CreateUserListProps = {}) {
     return { user, originPassword };
   } catch (err) {
     if (err instanceof Error) {
-      throw new Error(`Failed to create user: ${err.message}`);
+      throw new Error(`Failed to create user: ${err.message}`, { cause: err });
     }
-    throw new Error("Failed to create user due to an unknown error");
+    throw new Error("Failed to create user due to an unknown error", {
+      cause: err,
+    });
   }
 }
 

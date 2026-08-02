@@ -1,7 +1,5 @@
 import dns from "dns";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-import { createRequire } from "module";
+import { join } from "path";
 
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 import legacy from "@vitejs/plugin-legacy";
@@ -26,6 +24,7 @@ export default defineConfig(({ mode }): UserConfig => {
   );
 
   return {
+    plugins: [react(), legacy(), viteCommonjs()],
     server: {
       port: 3000,
       host: "localhost",
@@ -54,7 +53,7 @@ export default defineConfig(({ mode }): UserConfig => {
     css: {
       postcss: {
         plugins: [
-          tailwind({ config: join(__dirname, "tailwind.config.ts") }),
+          tailwind({ config: join(import.meta.dirname, "tailwind.config.ts") }),
           autoprefixer(),
         ],
       },

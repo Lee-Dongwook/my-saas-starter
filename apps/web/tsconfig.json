@@ -1,3 +1,10 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "types": ["node"]
+  },
+  "include": ["src", "vite.config.mts", ".storybook"],
+  "exclude": ["node_modules", "build"]
 }

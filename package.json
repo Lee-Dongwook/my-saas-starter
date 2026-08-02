@@ -3,37 +3,33 @@
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c",
-  "scripts": {},
+  "scripts": {
+    "dev": "pnpm --filter saas-web dev",
+    "build": "pnpm --filter saas-web build",
+    "typecheck": "tsc -p tsconfig.json && pnpm -r typecheck",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
-    "@faker-js/faker": "^10.5.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "pg": "^8.22.0",
-    "ramda": "^0.32.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-email": "^6.9.1",
-    "react-hook-form": "^7.84.0",
-    "react-intl": "^10.1.18",
-    "react-loading-skeleton": "^3.5.0",
-    "react-markdown": "^10.1.0",
-    "react-router": "^8.3.0",
-    "react-router-dom": "^7.18.2",
-    "rxjs": "^7.8.2",
-    "typescript": "^7.0.2",
-    "vite": "^8.2.0"
+    "react-email": "^6.9.1"
   },
   "devDependencies": {
-    "@nx/node": "^23.1.1",
+    "@faker-js/faker": "^10.5.0",
     "@types/node": "^26.1.2",
     "@types/pg": "^8.20.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
-    "prisma": "^7.9.1"
+    "oxlint": "^1.76.0",
+    "prettier": "^3.9.6",
+    "prisma": "^7.9.1",
+    "tsx": "^4.23.4",
+    "typescript": "^7.0.2"
   },
   "overrides": {
     "@react-email/components": {
