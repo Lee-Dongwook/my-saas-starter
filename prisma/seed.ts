@@ -1,56 +1,66 @@
+import "dotenv/config";
+
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient, type User } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { Pool } from "pg";
 
-interface CreateUserListProps {
-  email?: string;
-  password?: string;
-}
-
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL ?? "http://localhost:5432",
+  connectionString: process.env.DATABASE_URL,
 });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-async function createUser({ email, password }: CreateUserListProps = {}) {
-  try {
-    const originPassword = password || faker.internet.password();
-    const originEmail = email || faker.internet.email();
-    const hashedPassword = await hash(originPassword, 12);
+// All seeded users share this password (credential provider, bcrypt-hashed to
+// match the auth server's configured hasher).
+const SEED_PASSWORD = "password123";
 
-    const user = await prisma.user.create({
-      data: {
-        email: originEmail,
-        name: faker.person.firstName(),
-        password: hashedPassword,
-        role: faker.helpers.arrayElement(["USER", "ADMIN"]),
-      },
-    });
-
-    return { user, originPassword };
-  } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(`Failed to create user: ${err.message}`, { cause: err });
-    }
-    throw new Error("Failed to create user due to an unknown error", {
-      cause: err,
-    });
-  }
-}
-
-async function createSeedUsers(count: number = 10) {
-  const userPromises = Array.from({ length: count }, () => createUser());
-  const results = await Promise.all(userPromises);
-
-  console.log(`${results.length} seed users created successfully.`);
-  return results;
+async function createUser(password: string) {
+  const email = faker.internet.email().toLowerCase();
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name: faker.person.fullName(),
+      emailVerified: true,
+    },
+  });
+  await prisma.account.create({
+    data: {
+      userId: user.id,
+      accountId: user.id,
+      providerId: "credential",
+      password,
+    },
+  });
+  return user;
 }
 
 async function main() {
-  await createSeedUsers(10);
+  const password = await hash(SEED_PASSWORD, 12);
+
+  const users: User[] = [];
+  for (let i = 0; i < 10; i++) {
+    users.push(await createUser(password));
+  }
+
+  // A demo organization so the multi-tenancy/RBAC surface has data to show.
+  const org = await prisma.organization.create({
+    data: {
+      name: "Acme Inc",
+      slug: "acme",
+      members: {
+        create: users.slice(0, 3).map((user, index) => ({
+          userId: user.id,
+          role: index === 0 ? "owner" : "member",
+        })),
+      },
+    },
+  });
+
+  console.log(
+    `Seeded ${users.length} users (password: "${SEED_PASSWORD}") and organization "${org.slug}".`,
+  );
 }
 
 main()
