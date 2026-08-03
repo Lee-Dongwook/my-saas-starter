@@ -7,6 +7,11 @@ import Stripe from "stripe";
 
 import { prisma } from "./db";
 import { sendEmail } from "./email";
+import {
+  organizationInvitationTemplate,
+  resetPasswordTemplate,
+  verifyEmailTemplate,
+} from "./emails/templates";
 import { env } from "./env";
 
 const stripeClient =
@@ -46,25 +51,36 @@ export const auth = betterAuth({
       verify: ({ hash: hashed, password }) => compare(password, hashed),
     },
     sendResetPassword: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Reset your password",
-        html: `<p>Reset your password: <a href="${url}">${url}</a></p>`,
-      });
+      await sendEmail({ to: user.email, ...resetPasswordTemplate(url) });
     },
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Verify your email",
-        html: `<p>Verify your email: <a href="${url}">${url}</a></p>`,
-      });
+      await sendEmail({ to: user.email, ...verifyEmailTemplate(url) });
     },
   },
   socialProviders,
   plugins: [
-    organization(),
+    organization({
+      sendInvitationEmail: async ({
+        id,
+        email,
+        role,
+        organization: org,
+        inviter,
+      }) => {
+        await sendEmail({
+          to: email,
+          ...organizationInvitationTemplate({
+            organizationName: org.name,
+            inviterName: inviter.user.name,
+            role,
+            // The invitation is accepted in the web app, not the API.
+            url: `${env.WEB_ORIGIN}/accept-invitation/${id}`,
+          }),
+        });
+      },
+    }),
     ...(stripeClient
       ? [
           stripe({

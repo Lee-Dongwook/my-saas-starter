@@ -117,6 +117,7 @@ model Invitation {
     role      String?
     status    String   @default("pending")
     expiresAt DateTime
+    createdAt DateTime @default(now())
 
     organizationId String
     organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -137,14 +138,21 @@ model Subscription {
     referenceId          String
     stripeCustomerId     String?
     stripeSubscriptionId String?
+    stripeScheduleId     String?
     status               String    @default("incomplete")
+    billingInterval      String?
     periodStart          DateTime?
     periodEnd            DateTime?
     trialStart           DateTime?
     trialEnd             DateTime?
     cancelAtPeriodEnd    Boolean?  @default(false)
+    cancelAt             DateTime?
+    canceledAt           DateTime?
+    endedAt              DateTime?
     seats                Int?
-    groupId              String?
+    createdAt            DateTime  @default(now())
+    updatedAt            DateTime  @updatedAt
 
+    @@index([referenceId])
     @@map("subscription")
 }

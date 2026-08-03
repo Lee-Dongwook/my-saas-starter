@@ -1,4 +1,4 @@
-import { LayoutDashboard, Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, Settings, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
 
@@ -13,7 +13,10 @@ import { UserMenu } from "./user-menu";
  * Sidebar entries. Sections are added as their screens land, so every item
  * here always points at a route that exists.
  */
-const navigation = [{ to: "/", label: "Dashboard", icon: LayoutDashboard }];
+const navigation = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/settings", label: "Settings", icon: Settings, end: false },
+];
 
 function SidebarContent() {
   const { app } = useAppConfig();
@@ -27,11 +30,11 @@ function SidebarContent() {
       <OrgSwitcher />
 
       <nav className="flex flex-1 flex-col gap-1">
-        {navigation.map(({ to, label, icon: Icon }) => (
+        {navigation.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
-            end
+            end={end}
             className={({ isActive }) =>
               cn(
                 "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",

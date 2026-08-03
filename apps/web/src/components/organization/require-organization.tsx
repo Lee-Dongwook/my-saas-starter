@@ -13,8 +13,9 @@ import {
  * Guarantees that everything below it renders with an active organization.
  *
  * - no organizations at all -> the onboarding screen
- * - organizations but none active (fresh sign-in, or the active one was
- *   deleted) -> activate the first and wait for the session to catch up
+ * - organizations but none active -> activate the first and wait for the
+ *   session to catch up. This covers a fresh sign-in as well as the session
+ *   still pointing at an organization that was just left or deleted.
  */
 export function RequireOrganization() {
   const { data: session } = useSession();
@@ -23,21 +24,29 @@ export function RequireOrganization() {
   const { data: active, isPending: activePending } = useActiveOrganization();
 
   const activeId = session?.session.activeOrganizationId ?? null;
+  const resolved = Boolean(activeId && active);
+
   // A ref, not state: this must fire once per missing-active-org situation and
-  // never re-trigger a render on its own.
-  const activating = useRef<string | null>(null);
+  // must never re-trigger a render on its own.
+  const attempted = useRef<string | null>(null);
 
   useEffect(() => {
-    if (activeId || !organizations?.length) return;
+    if (resolved) {
+      // Healthy again — allow a future recovery attempt.
+      attempted.current = null;
+      return;
+    }
+    if (activePending || !organizations?.length) return;
+
     const first = organizations[0]!;
-    if (activating.current === first.id) return;
-    activating.current = first.id;
+    if (attempted.current === first.id) return;
+    attempted.current = first.id;
     void organization.setActive({ organizationId: first.id });
-  }, [activeId, organizations]);
+  }, [resolved, activePending, organizations]);
 
   if (listPending) return <FullPageLoader />;
   if (!organizations?.length) return <Navigate to="/onboarding" replace />;
-  if (!activeId || activePending || !active) return <FullPageLoader />;
+  if (!resolved) return <FullPageLoader />;
 
   return <Outlet />;
 }
