@@ -12,6 +12,9 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@better-auth/stripe": "^1.6.25",
+    "@hookform/resolvers": "^5.7.1",
+    "better-auth": "^1.6.25",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "intl": "^1.2.5",
@@ -25,7 +28,8 @@
     "react-markdown": "^10.1.0",
     "react-router": "^8.3.0",
     "rxjs": "^7.8.2",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",

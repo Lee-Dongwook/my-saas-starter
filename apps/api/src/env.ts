@@ -3,6 +3,7 @@ import { z } from "zod";
 
 const schema = z.object({
   // Core
+  APP_NAME: z.string().min(1).default("SaaS Starter"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   BETTER_AUTH_SECRET: z.string().min(1, "BETTER_AUTH_SECRET is required"),
   BETTER_AUTH_URL: z.string().min(1).default("http://localhost:8000"),

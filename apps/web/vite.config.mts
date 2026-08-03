@@ -55,7 +55,12 @@ export default defineConfig(({ mode }): UserConfig => {
       port: 4300,
       host: "localhost",
     },
-    define: envWithProcessPrefix,
+    define: {
+      ...envWithProcessPrefix,
+      // Always defined, so `process.env.VITE_API_URL` never survives into the
+      // bundle as a reference to the (browser-absent) `process` global.
+      "process.env.VITE_API_URL": JSON.stringify(env.VITE_API_URL ?? ""),
+    },
     css: {
       postcss: {
         plugins: [
