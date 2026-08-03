@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A **SaaS starter kit** — the goal is to provide every feature common to any SaaS (auth, orgs/RBAC, billing, email, i18n), not a single product. Treat additions as reusable building blocks.
 
+## Changelog
+
+`CHANGELOG.md` tracks progress ([Keep a Changelog](https://keepachangelog.com/) format). Update the `[Unreleased]` block **in the same commit** as the change — Added / Changed / Fixed, and move the item out of the `Roadmap` section at the bottom when it lands. Nothing is released yet; on the first release, move `[Unreleased]` under a version heading and open a fresh one.
+
 ## Repository layout
 
 pnpm workspace (`pnpm@9.15.0`, enforced via `packageManager`). Globs are `apps/**` and `packages/**` (`packages/` doesn't exist yet).
