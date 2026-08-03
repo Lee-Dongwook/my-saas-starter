@@ -25,6 +25,12 @@ export default defineConfig(({ mode }): UserConfig => {
 
   return {
     plugins: [react(), legacy(), viteCommonjs()],
+    resolve: {
+      // Mirrors the "@/*" -> "./src/*" mapping in tsconfig.json.
+      alias: {
+        "@": join(import.meta.dirname, "src"),
+      },
+    },
     server: {
       port: 3000,
       host: "localhost",

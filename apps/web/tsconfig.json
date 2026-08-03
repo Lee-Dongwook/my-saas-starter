@@ -3,7 +3,11 @@
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
-    "types": ["node"]
+    "types": ["node"],
+    // TS 7 removed `baseUrl`; path mappings resolve relative to this file.
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src", "vite.config.mts", ".storybook"],
   "exclude": ["node_modules", "build"]
