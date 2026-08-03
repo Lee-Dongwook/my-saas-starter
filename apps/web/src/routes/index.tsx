@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router";
 
 import { RequireAuth, RequireGuest } from "@/components/auth/route-guards";
+import { AppShell } from "@/components/layout/app-shell";
+import { RequireOrganization } from "@/components/organization/require-organization";
 
 import { AuthLayout } from "./auth/auth-layout";
 import { ForgotPasswordPage } from "./auth/forgot-password";
@@ -8,7 +10,8 @@ import { ResetPasswordPage } from "./auth/reset-password";
 import { SignInPage } from "./auth/sign-in";
 import { SignUpPage } from "./auth/sign-up";
 import { VerifyEmailPage } from "./auth/verify-email";
-import { DashboardPage } from "./dashboard";
+import { DashboardPage } from "./app/dashboard";
+import { OnboardingPage } from "./app/onboarding";
 import { NotFoundPage } from "./not-found";
 
 export const router = createBrowserRouter([
@@ -34,7 +37,19 @@ export const router = createBrowserRouter([
   },
   {
     element: <RequireAuth />,
-    children: [{ path: "/", element: <DashboardPage /> }],
+    children: [
+      // Outside the org gate: this is where users with no organization land.
+      { path: "/onboarding", element: <OnboardingPage /> },
+      {
+        element: <RequireOrganization />,
+        children: [
+          {
+            element: <AppShell />,
+            children: [{ path: "/", element: <DashboardPage /> }],
+          },
+        ],
+      },
+    ],
   },
   { path: "*", element: <NotFoundPage /> },
 ]);

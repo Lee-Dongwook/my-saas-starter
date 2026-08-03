@@ -14,7 +14,11 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": "off",
-    "import/no-unassigned-import": "off"
+    "import/no-unassigned-import": "off",
+    // Render props (e.g. <DropdownMenu trigger={(props) => ...}>) are a
+    // deliberate pattern here: the component injects ARIA wiring and a ref
+    // into a trigger the caller owns.
+    "react/no-unstable-nested-components": ["warn", { "allowAsProps": true }]
   },
   "ignorePatterns": [
     "**/node_modules/**",
