@@ -19,7 +19,12 @@ const schema = z.object({
   // Stripe (optional — billing is enabled only when both values are set)
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // Price ids per plan. A plan is offered only when its monthly price id is
+  // set; the annual id is optional and adds a yearly toggle to the pricing UI.
   STRIPE_PRICE_PRO: z.string().optional(),
+  STRIPE_PRICE_PRO_ANNUAL: z.string().optional(),
+  STRIPE_PRICE_BUSINESS: z.string().optional(),
+  STRIPE_PRICE_BUSINESS_ANNUAL: z.string().optional(),
 
   // Email (optional — falls back to console logging in dev when unset)
   RESEND_API_KEY: z.string().optional(),

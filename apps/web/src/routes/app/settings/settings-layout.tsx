@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 const sections = [
   { to: "/settings/organization", label: "Organization" },
   { to: "/settings/members", label: "Members" },
+  { to: "/settings/billing", label: "Billing" },
 ];
 
 export function SettingsLayout() {

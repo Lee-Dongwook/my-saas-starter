@@ -1,13 +1,15 @@
 import { Hono } from "hono";
 
 import { env } from "../env";
+import { billingEnabled } from "../stripe";
 
 /**
  * Public feature flags.
  *
  * The web app cannot read server env, so it asks the API which optional
- * features were actually configured (OAuth providers, billing, email
- * verification) and hides the corresponding UI when they are off.
+ * features were actually configured (OAuth providers, billing) and hides the
+ * corresponding UI when they are off. Plan details are served separately by
+ * GET /api/billing/plans, which also resolves live prices from Stripe.
  */
 export interface AppConfig {
   app: { name: string };
@@ -15,7 +17,7 @@ export interface AppConfig {
     emailAndPassword: boolean;
     socialProviders: Array<"github" | "google">;
   };
-  billing: { enabled: boolean; plans: Array<{ name: string }> };
+  billing: { enabled: boolean };
 }
 
 export function buildAppConfig(): AppConfig {
@@ -27,17 +29,10 @@ export function buildAppConfig(): AppConfig {
     socialProviders.push("google");
   }
 
-  const billingEnabled = Boolean(
-    env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET,
-  );
-
   return {
     app: { name: env.APP_NAME },
     auth: { emailAndPassword: true, socialProviders },
-    billing: {
-      enabled: billingEnabled,
-      plans: billingEnabled && env.STRIPE_PRICE_PRO ? [{ name: "pro" }] : [],
-    },
+    billing: { enabled: billingEnabled },
   };
 }
 

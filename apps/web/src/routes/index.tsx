@@ -13,6 +13,7 @@ import { VerifyEmailPage } from "./auth/verify-email";
 import { AcceptInvitationPage } from "./accept-invitation";
 import { DashboardPage } from "./app/dashboard";
 import { OnboardingPage } from "./app/onboarding";
+import { BillingPage } from "./app/settings/billing";
 import { MembersPage } from "./app/settings/members";
 import { OrganizationSettingsPage } from "./app/settings/organization";
 import { SettingsLayout } from "./app/settings/settings-layout";
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
                     element: <OrganizationSettingsPage />,
                   },
                   { path: "members", element: <MembersPage /> },
+                  { path: "billing", element: <BillingPage /> },
                 ],
               },
             ],

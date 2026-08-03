@@ -91,6 +91,10 @@ model Organization {
     metadata  String?
     createdAt DateTime @default(now())
 
+    // stripe plugin (organization.enabled) — an organization is its own
+    // Stripe customer, so invoices belong to the team, not to one member.
+    stripeCustomerId String?
+
     members     Member[]
     invitations Invitation[]
 

@@ -3,8 +3,9 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { organization } from "better-auth/plugins";
 import { compare, hash } from "bcryptjs";
-import Stripe from "stripe";
 
+import { authorizeOrganizationReference } from "./billing/authorize";
+import { toStripePlans } from "./billing/plans";
 import { prisma } from "./db";
 import { sendEmail } from "./email";
 import {
@@ -13,11 +14,7 @@ import {
   verifyEmailTemplate,
 } from "./emails/templates";
 import { env } from "./env";
-
-const stripeClient =
-  env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET
-    ? new Stripe(env.STRIPE_SECRET_KEY)
-    : null;
+import { stripeClient } from "./stripe";
 
 const socialProviders = {
   ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
@@ -87,9 +84,19 @@ export const auth = betterAuth({
             stripeClient,
             stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET!,
             createCustomerOnSignUp: true,
+            // Gives organizations their own Stripe customer, so an invoice
+            // belongs to the team rather than whoever happened to subscribe.
+            organization: { enabled: true },
             subscription: {
               enabled: true,
-              plans: [{ name: "pro", priceId: env.STRIPE_PRICE_PRO ?? "" }],
+              plans: toStripePlans(),
+              // Subscriptions are referenced by organization id.
+              authorizeReference: ({ user, referenceId, action }) =>
+                authorizeOrganizationReference({
+                  userId: user.id,
+                  referenceId,
+                  action,
+                }),
             },
           }),
         ]

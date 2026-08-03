@@ -9,7 +9,7 @@ export interface AppConfig {
     emailAndPassword: boolean;
     socialProviders: Array<"github" | "google">;
   };
-  billing: { enabled: boolean; plans: Array<{ name: string }> };
+  billing: { enabled: boolean };
 }
 
 /**
@@ -20,7 +20,7 @@ export interface AppConfig {
 const FALLBACK_CONFIG: AppConfig = {
   app: { name: "SaaS Starter" },
   auth: { emailAndPassword: true, socialProviders: [] },
-  billing: { enabled: false, plans: [] },
+  billing: { enabled: false },
 };
 
 const ConfigContext = createContext<AppConfig>(FALLBACK_CONFIG);

@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 
 import { auth } from "./auth";
 import { env } from "./env";
+import { billingRoutes } from "./routes/billing";
 import { configRoutes } from "./routes/config";
 
 const app = new Hono();
@@ -23,6 +24,9 @@ app.get("/api/health", (c) => c.json({ status: "ok" }));
 // Which optional features are actually configured — the web app reads this to
 // decide whether to render OAuth buttons, billing screens, and so on.
 app.route("/api/config", configRoutes);
+
+// Plan catalogue with live Stripe prices (cached).
+app.route("/api/billing", billingRoutes);
 
 // Better Auth owns every /api/auth/** route (sign-in, sign-up, OAuth,
 // organization, stripe webhooks, ...).
